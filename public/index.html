@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>⚡ ShAdOw ChaT API</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --pink: #ff2d9b;
+    --purple: #9b00ff;
+    --violet: #6c00ff;
+    --dark: #0a0010;
+    --card: #110022;
+    --border: rgba(155,0,255,0.25);
+    --glow-pink: 0 0 20px rgba(255,45,155,0.5);
+    --glow-purple: 0 0 20px rgba(155,0,255,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: #e0d0ff;
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated bg grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(155,0,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(155,0,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(40px); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 60%, #cc66ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    filter: drop-shadow(0 0 30px rgba(255,45,155,0.4));
+  }
+
+  .logo span {
+    display: inline-block;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,45,155,0.6)); }
+    50% { filter: drop-shadow(0 0 30px rgba(255,45,155,1)); }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid #00ff88;
+    border-radius: 99px;
+    padding: 6px 20px;
+    margin: 16px 0;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: #00ff88;
+    letter-spacing: 2px;
+    box-shadow: 0 0 16px rgba(0,255,136,0.2);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: #00ff88;
+    border-radius: 50%;
+    animation: blink 1.2s ease-in-out infinite;
+    box-shadow: 0 0 8px #00ff88;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .tagline {
+    font-size: 1.05rem;
+    color: rgba(200,180,255,0.7);
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    color: var(--purple);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+
+  /* Endpoint cards */
+  .endpoints {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.1s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.3s; }
+  .card:nth-child(4) { animation-delay: 0.4s; }
+  .card:nth-child(5) { animation-delay: 0.5s; }
+  .card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 12px 0 0 12px;
+  }
+
+  .card.post::before { background: var(--pink); box-shadow: var(--glow-pink); }
+  .card.delete::before { background: #ff4444; box-shadow: 0 0 16px rgba(255,68,68,0.5); }
+  .card.get::before { background: #00cfff; box-shadow: 0 0 16px rgba(0,207,255,0.5); }
+  .card.put::before { background: #ffaa00; box-shadow: 0 0 16px rgba(255,170,0,0.4); }
+
+  .card:hover {
+    border-color: rgba(155,0,255,0.5);
+    transform: translateX(4px);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .method {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+
+  .method.POST { background: var(--pink); color: #fff; }
+  .method.DELETE { background: #ff4444; color: #fff; }
+  .method.GET { background: #00cfff; color: #000; }
+  .method.PUT { background: #ffaa00; color: #000; }
+
+  .endpoint-path {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    color: #cc99ff;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: rgba(200,180,255,0.65);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .card-body {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(155,0,255,0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: #b0e0ff;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid rgba(155,0,255,0.4);
+    border-radius: 7px;
+    padding: 6px 14px;
+    color: var(--purple);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .copy-btn:hover {
+    background: rgba(155,0,255,0.15);
+    border-color: var(--purple);
+    box-shadow: var(--glow-purple);
+    color: #cc66ff;
+  }
+
+  .copy-btn.copied {
+    border-color: #00ff88;
+    color: #00ff88;
+    box-shadow: 0 0 12px rgba(0,255,136,0.3);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(150,120,200,0.5);
+    letter-spacing: 1px;
+    animation: fadeUp 0.8s ease 0.8s both;
+  }
+
+  .footer a {
+    color: var(--pink);
+    text-decoration: none;
+  }
+
+  .footer strong {
+    color: var(--purple);
+    font-family: 'Orbitron', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo"><span>⚡</span> ShAdOw<br/>ChaT API</div>
+    <div class="status-badge"><span class="dot"></span> ONLINE</div>
+    <div class="tagline">Fastest Simi Chat API for Messenger Bots</div>
+  </div>
+
+  <div class="section-title">// Endpoints</div>
+
+  <div class="endpoints">
+
+    <div class="card post">
+      <div class="card-top">
+        <span class="method POST">POST</span>
+        <span class="endpoint-path">/api/shadow</span>
+      </div>
+      <div class="card-desc">Main chat reply — send a message, get a bot response</div>
+      <div class="card-body">body: { text: "hello", style: 2 }</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow')">📋 Copy URL</button>
+    </div>
+
+    <div class="card post">
+      <div class="card-top">
+        <span class="method POST">POST</span>
+        <span class="endpoint-path">/api/shadow/teach</span>
+      </div>
+      <div class="card-desc">Teach new response — adds to the custom database</div>
+      <div class="card-body">body: { trigger, responses, userID }</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow/teach')">📋 Copy URL</button>
+    </div>
+
+    <div class="card delete">
+      <div class="card-top">
+        <span class="method DELETE">DELETE</span>
+        <span class="endpoint-path">/api/shadow/remove</span>
+      </div>
+      <div class="card-desc">Remove response — delete by trigger and index</div>
+      <div class="card-body">body: { trigger, index }</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow/remove')">📋 Copy URL</button>
+    </div>
+
+    <div class="card get">
+      <div class="card-top">
+        <span class="method GET">GET</span>
+        <span class="endpoint-path">/api/shadow/list</span>
+      </div>
+      <div class="card-desc">List recent triggers and total count</div>
+      <div class="card-body">GET /api/shadow/list
+GET /api/shadow/list/all  → teacher leaderboard</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow/list')">📋 Copy URL</button>
+    </div>
+
+    <div class="card put">
+      <div class="card-top">
+        <span class="method PUT">PUT</span>
+        <span class="endpoint-path">/api/shadow/edit</span>
+      </div>
+      <div class="card-desc">Edit existing trigger — replace all responses</div>
+      <div class="card-body">body: { oldTrigger, newResponse }</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow/edit')">📋 Copy URL</button>
+    </div>
+
+    <div class="card get">
+      <div class="card-top">
+        <span class="method GET">GET</span>
+        <span class="endpoint-path">/api/shadow/msg</span>
+      </div>
+      <div class="card-desc">Search triggers by keyword</div>
+      <div class="card-body">GET /api/shadow/msg?userMessage=hello</div>
+      <button class="copy-btn" onclick="copyUrl(this, '/api/shadow/msg')">📋 Copy URL</button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Built with ⚡ by <strong>Rocky</strong> &nbsp;•&nbsp; Powered by MongoDB + Vercel
+  </div>
+
+</div>
+
+<script>
+  function copyUrl(btn, path) {
+    const url = location.origin + path;
+    navigator.clipboard.writeText(url).then(() => {
+      const original = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+</body>
+  </html>
